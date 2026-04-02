@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="1920"
+   height="1080"
+   viewBox="0 0 1920 1080"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
+   sodipodi:docname="gear_test.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     inkscape:zoom="2"
+     inkscape:cx="1060"
+     inkscape:cy="318.5"
+     inkscape:window-width="1920"
+     inkscape:window-height="1057"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer2" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     sodipodi:insensitive="true">
+    <g
+       inkscape:label="Rendered Gears"
+       transform="translate(520.40015,516.89595)"
+       id="g8">
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1"
+         d="m 157.466,-23.1233 20.098,-2.9513 11.788,1.1459 33.246,15.05004 V 9.87866 l -33.246,15.05004 -11.788,1.1459 -20.098,-2.9513 -9.535,35.5844 18.881,7.493 9.636,6.8864 21.267,29.6569 -9.879,17.11 -36.317,-3.589 -10.782,-4.902 -15.929,-12.6045 -26.0495,26.0495 12.6045,15.929 4.902,10.782 3.589,36.317 -17.11,9.879 -29.6569,-21.267 -6.8864,-9.636 -7.493,-18.881 -35.5844,9.535 2.9513,20.098 -1.1459,11.788 -15.05004,33.246 H -9.87866 l -15.05004,-33.246 -1.1459,-11.788 2.9513,-20.098 -35.5844,-9.535 -7.493,18.881 -6.8864,9.636 -29.6569,21.267 -17.11,-9.879 3.589,-36.317 4.902,-10.782 12.6045,-15.929 -26.0495,-26.0495 -15.929,12.6045 -10.782,4.902 -36.317,3.589 -9.879,-17.11 21.267,-29.6569 9.636,-6.8864 18.881,-7.493 -9.535,-35.5844 -20.098,2.9513 -11.788,-1.1459 -33.246,-15.05004 V -9.87866 l 33.246,-15.05004 11.788,-1.1459 20.098,2.9513 9.535,-35.5844 -18.881,-7.493 -9.636,-6.8864 -21.267,-29.6569 9.879,-17.11 36.317,3.589 10.782,4.902 15.929,12.6045 26.0495,-26.0495 -12.6045,-15.929 -4.902,-10.782 -3.589,-36.317 17.11,-9.879 29.6569,21.267 6.8864,9.636 7.493,18.881 35.5844,-9.535 -2.9513,-20.098 1.1459,-11.788 15.05004,-33.246 H 9.87866 l 15.05004,33.246 1.1459,11.788 -2.9513,20.098 35.5844,9.535 7.493,-18.881 6.8864,-9.636 29.6569,-21.267 17.11,9.879 -3.589,36.317 -4.902,10.782 -12.6045,15.929 26.0495,26.0495 15.929,-12.6045 10.782,-4.902 36.317,-3.589 9.879,17.11 -21.267,29.6569 -9.636,6.8864 -18.881,7.493 z"
+         id="path7" />
+      <circle
+         style="fill:none;stroke:#000000;stroke-width:1"
+         id="path8"
+         cx="0"
+         cy="0"
+         r="50" />
+    </g>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Layer 2">
+    <circle
+       style="fill:none;stroke:#000000;stroke-opacity:1"
+       id="path9"
+       cx="1055.25"
+       cy="378"
+       r="147.78532" />
+    <rect
+       style="fill:none;stroke:#000000;stroke-opacity:1"
+       id="rect9"
+       width="47.5"
+       height="365"
+       x="1031.5"
+       y="195.5" />
+    <rect
+       style="fill:none;stroke:#000000;stroke-opacity:1"
+       id="rect10"
+       width="47.5"
+       height="365"
+       x="354.25"
+       y="-1237.75"
+       transform="rotate(90)" />
+    <path
+       style="fill:none;stroke:#ff0000;stroke-opacity:1"
+       d="m 1084.5,195 -27,182 159,-168"
+       id="path10" />
+    <path
+       style="fill:none;stroke:#ff0000;stroke-opacity:1"
+       d="m 1057.5,378 144.5,2"
+       id="path11" />
+    <text
+       xml:space="preserve"
+       style="font-size:16px;line-height:1.25;font-family:'BIZ UDMincho';-inkscape-font-specification:'BIZ UDMincho, Normal';letter-spacing:0px;word-spacing:0px"
+       x="1229.5"
+       y="451"
+       id="text11"><tspan
+         sodipodi:role="line"
+         id="tspan11"
+         x="1229.5"
+         y="451"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:sans-serif;-inkscape-font-specification:sans-serif">R1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:16px;line-height:1.25;font-family:'BIZ UDMincho';-inkscape-font-specification:'BIZ UDMincho, Normal';letter-spacing:0px;word-spacing:0px"
+       x="1108"
+       y="179.5"
+       id="text12"><tspan
+         sodipodi:role="line"
+         id="tspan12"
+         x="1108"
+         y="179.5"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:sans-serif;-inkscape-font-specification:sans-serif">k</tspan></text>
+    <path
+       style="fill:none;stroke:#00ff00;stroke-opacity:1"
+       d="m 1116,193 c 17.4374,19.39883 40.4012,55.21338 -4,62 -17.4821,2.6721 -21.5581,-4.96463 -29.5,-11.5 l 3,14.5"
+       id="path12"
+       sodipodi:nodetypes="cscc" />
+    <path
+       style="fill:none;stroke:#00ff00;stroke-opacity:1"
+       d="m 1220.5,442 c -22.0571,-5.01528 -43.769,-19.00631 -64.5,-58.5 l 1,9"
+       id="path13"
+       sodipodi:nodetypes="ccc" />
+    <text
+       xml:space="preserve"
+       style="font-size:16px;line-height:1.25;font-family:'BIZ UDMincho';-inkscape-font-specification:'BIZ UDMincho, Normal';letter-spacing:0px;word-spacing:0px"
+       x="1193.5"
+       y="501.5"
+       id="text13"><tspan
+         sodipodi:role="line"
+         id="tspan13"
+         x="1193.5"
+         y="501.5"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:sans-serif;-inkscape-font-specification:sans-serif">R1*sin(k)</tspan></text>
+    <path
+       style="fill:none;stroke:#00ff00;stroke-opacity:1"
+       d="m 1189,492 c -22.0571,5.98472 -99.769,-69.50631 -120.5,-109 l -2,15.5"
+       id="path14"
+       sodipodi:nodetypes="ccc" />
+    <text
+       xml:space="preserve"
+       style="font-size:16px;line-height:1.25;font-family:'BIZ UDMincho';-inkscape-font-specification:'BIZ UDMincho, Normal';letter-spacing:0px;word-spacing:0px"
+       x="1186"
+       y="276"
+       id="text14"><tspan
+         sodipodi:role="line"
+         id="tspan14"
+         x="1186"
+         y="276"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:sans-serif;-inkscape-font-specification:sans-serif">R1*sin(k)*sqrt(2)</tspan></text>
+    <path
+       style="fill:none;stroke:#00ff00;stroke-opacity:1"
+       d="m 1218.5,280.5 c 11.9429,27.98472 -124.269,122.99369 -145,83.5 l 0,11"
+       id="path15"
+       sodipodi:nodetypes="ccc" />
+  </g>
+</svg>

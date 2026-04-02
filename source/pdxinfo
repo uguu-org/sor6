@@ -1,0 +1,7 @@
+name=Sor 6
+author=uguu.org
+description=Hit the highest D6
+bundleID=org.uguu.Sor6
+version=0.2
+buildNumber=2
+imagePath=launcher/

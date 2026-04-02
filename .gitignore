@@ -1,0 +1,9 @@
+*.pdx
+*.zip
+*_windows.pdx
+device_build_source/
+sim_build_source/
+source/device_build/
+source/sim_build/
+source/build/
+data/build/
