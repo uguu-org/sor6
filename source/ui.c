@@ -9,6 +9,9 @@
 // Constants for readability.  See main.c.
 #define TRACK_COUNT 12
 
+// Buffer size for converting integer to string.
+#define ITOA_BUFFER_SIZE   16
+
 // Sprite placements.
 //
 // See ../data/collect_ui_tiles.sh for the offsets where the original
@@ -63,6 +66,38 @@ static LCDBitmapTable *g_ui = NULL;
 static LCDBitmapTable *g_circle = NULL;
 static LCDBitmap *g_menu = NULL;
 static LCDBitmap *g_digits = NULL;
+
+// Convert non-negative integer to decimal string, assuming fixed-size buffer.
+// Returns number of right-aligned digits written to the buffer.  Call site
+// should follow this pattern:
+//
+//   char buffer[ITOA_BUFFER_SIZE];
+//   const int length = ToDecimalString(value, buffer);
+//   const char *text = buffer + (ITOA_BUFFER_SIZE - 1) - length;
+//
+// This function is used instead of `pd->system->formatString("%d")` to avoid
+// the memory allocation/deallocation associated with string formatting.
+// Since score display converts integer to string on every frame, not paying
+// for that memory allocation improves frame rate slightly.
+static int ToDecimalString(int x, char *buffer)
+{
+   buffer[ITOA_BUFFER_SIZE - 1] = '\0';
+   if( x == 0 )
+   {
+      buffer[ITOA_BUFFER_SIZE - 2] = '0';
+      return 1;
+   }
+
+   int length = 0;
+   char *w = buffer + ITOA_BUFFER_SIZE - 2;
+   while( x != 0 )
+   {
+      *w-- = '0' + (x % 10);
+      x /= 10;
+      length++;
+   }
+   return length;
+}
 
 // Measure length of string in number of code points.
 static int UTF8Length(const char *text)
@@ -191,8 +226,9 @@ void DrawScore(PlaydateAPI *pd, int score, int invert)
    if( score == 0 )
       return;
 
-   char *text = NULL;
-   const int length = pd->system->formatString(&text, "%d", score);
+   char buffer[ITOA_BUFFER_SIZE];
+   const int length = ToDecimalString(score, buffer);
+   const char *text = buffer + (ITOA_BUFFER_SIZE - 1) - length;
 
    if( invert )
    {
@@ -209,8 +245,6 @@ void DrawScore(PlaydateAPI *pd, int score, int invert)
       pd->graphics->setDrawMode(kDrawModeCopy);
       pd->graphics->drawText(text, length, kASCIIEncoding, 10, 10);
    }
-
-   pd->system->realloc(text, 0);
 }
 
 // Draw total score in upper right corner.
@@ -219,8 +253,9 @@ void DrawTotalScore(PlaydateAPI *pd, int score)
    if( score == 0 )
       return;
 
-   char *text = NULL;
-   const int length = pd->system->formatString(&text, "%d", score);
+   char buffer[ITOA_BUFFER_SIZE];
+   const int length = ToDecimalString(score, buffer);
+   const char *text = buffer + (ITOA_BUFFER_SIZE - 1) - length;
 
    pd->graphics->setDrawMode(kDrawModeInverted);
    pd->graphics->drawTextInRect(
@@ -230,8 +265,6 @@ void DrawTotalScore(PlaydateAPI *pd, int score)
    pd->graphics->drawTextInRect(
       text, length, kASCIIEncoding, 0, 10, SCREEN_WIDTH - 10, 30,
       kWrapClip, kAlignTextRight);
-
-   pd->system->realloc(text, 0);
 }
 
 // Draw info text on title screen.
