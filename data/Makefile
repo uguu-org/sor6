@@ -298,6 +298,13 @@ $(BUILD_DIR)/crop_table.exe: crop_table.c | make_build_dir
 $(BUILD_DIR)/shrink_tiles.exe: shrink_tiles.c | make_build_dir
 	$(CC) $(CFLAGS) $< -lpng -o $@
 
+# Mirror inner tiles in image tables.
+$(BUILD_DIR)/h_mirror_table.exe: h_mirror_table.c | make_build_dir
+	$(CC) $(CFLAGS) $< -lpng -o $@
+
+$(BUILD_DIR)/v_mirror_table.exe: v_mirror_table.c | make_build_dir
+	$(CC) $(CFLAGS) $< -lpng -o $@
+
 # Composite a series of black and white PNGs together.
 $(BUILD_DIR)/stack_bw.exe: stack_bw.c | make_build_dir
 	$(CC) $(CFLAGS) $< -lpng -o $@
@@ -334,14 +341,17 @@ test: \
 	$(BUILD_DIR)/test_passed.crop_table \
 	$(BUILD_DIR)/test_passed.dither \
 	$(BUILD_DIR)/test_passed.element_count \
-	$(BUILD_DIR)/test_passed.select_layers \
+	$(BUILD_DIR)/test_passed.generate_table_from_grayscale_image \
+	$(BUILD_DIR)/test_passed.generate_unique_tiles \
+	$(BUILD_DIR)/test_passed.h_mirror_table \
 	$(BUILD_DIR)/test_passed.no_text \
+	$(BUILD_DIR)/test_passed.select_layers \
 	$(BUILD_DIR)/test_passed.shrink_tiles \
 	$(BUILD_DIR)/test_passed.stack_bw \
 	$(BUILD_DIR)/test_passed.transparent_black \
 	$(BUILD_DIR)/test_passed.transparent_black_edge \
-	$(BUILD_DIR)/test_passed.generate_table_from_grayscale_image \
-	$(BUILD_DIR)/test_passed.generate_unique_tiles
+	$(BUILD_DIR)/test_passed.v_mirror_table
+
 
 $(BUILD_DIR)/test_passed.remove_unused_defs: remove_unused_defs.pl remove_unused_defs_test.sh | make_build_dir
 	bash remove_unused_defs_test.sh $< && touch $@
@@ -369,6 +379,12 @@ $(BUILD_DIR)/test_passed.crop_table: $(BUILD_DIR)/crop_table.exe crop_table_test
 
 $(BUILD_DIR)/test_passed.shrink_tiles: $(BUILD_DIR)/shrink_tiles.exe shrink_tiles_test.sh
 	bash shrink_tiles_test.sh $< && touch $@
+
+$(BUILD_DIR)/test_passed.h_mirror_table: $(BUILD_DIR)/h_mirror_table.exe h_mirror_table_test.sh
+	bash h_mirror_table_test.sh $< && touch $@
+
+$(BUILD_DIR)/test_passed.v_mirror_table: $(BUILD_DIR)/v_mirror_table.exe v_mirror_table_test.sh
+	bash v_mirror_table_test.sh $< && touch $@
 
 $(BUILD_DIR)/test_passed.stack_bw: $(BUILD_DIR)/stack_bw.exe stack_bw_test.sh
 	bash stack_bw_test.sh $< && touch $@

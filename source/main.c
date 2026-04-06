@@ -1200,6 +1200,14 @@ int eventHandler(PlaydateAPI *pd, PDSystemEvent event, uint32_t unused_arg)
          }
          break;
 
+      case kEventMirrorStarted:
+         ReduceBackgroundDetail(1);
+         break;
+
+      case kEventMirrorEnded:
+         ReduceBackgroundDetail(0);
+         break;
+
       default:
          break;
    }

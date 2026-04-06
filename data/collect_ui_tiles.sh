@@ -34,6 +34,7 @@ TILE_SIZE="${TILE_WIDTH}x${TILE_HEIGHT}"
 
 exec magick \
    -size "${OUTPUT_WIDTH}x${OUTPUT_HEIGHT}" "xc:rgba(0,0,0,0)" \
+   -depth 8 -colorspace Gray \
    $CROP_BEGIN "${TILE_SIZE}+192+576" $CROP_END "+${X0}+${Y0}" -composite \
    $CROP_BEGIN "${TILE_SIZE}+264+853" $CROP_END "+${X1}+${Y0}" -composite \
    $CROP_BEGIN "${TILE_SIZE}+312+634" $CROP_END "+${X2}+${Y0}" -composite \

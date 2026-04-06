@@ -25,4 +25,9 @@ void RenderGameBackground(PlaydateAPI *pd,
                           int game_frames,
                           int game_time_ms);
 
+// Set reduced drawing mode for some backgrounds.  This is useful for
+// maintaining frame rate when playing over Mirror.
+//  reduce = use 1 to reduce details, or 0 for full details.
+void ReduceBackgroundDetail(int reduce);
+
 #endif  // BACKGROUND_H_

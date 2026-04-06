@@ -1,19 +1,9 @@
 // Render backgrounds behind the dice grid.
 //
 // Some of these are computationally expensive.  They can all reach
-// 30fps on the device, but when playing with Mirror, these songs drop
-// to lower frame rates:
-//
-// - Song 3 = 26fps
-// - Song 8 = 24fps
-// - Song 11 = 24fps
-//
-// Also, even when the game is running at 30fps, sometimes we get
-// choppy frame rates just by running with Mirror.  The game is still
-// quite playable at 24fps, but since world updates are synchronized
-// to frame counters (unlike song updates which are synchronized to
-// time), some of the projectile movements will feel noticeably
-// different.  It's most unfortunate.
+// 30fps on the device, but when playing with Mirror, song 3 will be
+// rendered at reduced detail to maintain 30fps, and song 11 drops to
+// about 28 fps.
 
 #include"background.h"
 #include<math.h>
@@ -35,6 +25,10 @@
 // is drawn by hashing coordinates.
 static int g_scroll_x = 0;
 static int g_scroll_y = 0;
+
+// Detail reduction setting.  If 1, some backgrounds are drawn with reduced
+// detail.  This is useful for maintaining 30fps when playing over Mirror.
+static int g_reduce_details = 0;
 
 // Ring buffer for spawned objects, used by song 2 and 7.
 typedef struct
@@ -434,18 +428,32 @@ static void Song03(PlaydateAPI *pd, int game_time_ms)
       const int x0 = scaled_x - x_block_offset + kLayerOffset[layer][0];
       const int y0 = scaled_y - y_block_offset + kLayerOffset[layer][1];
 
+      // Drop some of the clovers for the lower layers.  This reduces the
+      // total number of clovers drawn from ~587 to ~332.  This reduction
+      // allows the game to maintain 29-30fps while playing over Mirror.
+      // If we try to draw all ~587 clovers, we would get about 26-27fps.
+      //
+      // Reducing number of clovers appears to be the only thing that
+      // helps with the frame rate.  Other things we have tried:
+      // - Bake the bitmap flip X/Y into the sprites.
+      // - Draw clovers with stencils, instead of drawing translucent black
+      //   rectangle over them.
+      const int layer_visibility_mask =
+         g_reduce_details && layer < 2 ? 0x4 : 0xc;
+
       // Select which group to blink based on beat index.
       const uint32_t blink_hash =
          HashXY(beat_index, layer) & BG03_BLINK_GROUP_MASK;
-      for(int y = -BG03_CLOVER_SPACING * 4;
-          y < SCREEN_HEIGHT + BG03_CLOVER_SPACING * 4;
+      for(int y = -BG03_CLOVER_SPACING * 2;
+          y < SCREEN_HEIGHT + BG03_CLOVER_SPACING * 2;
           y += BG03_CLOVER_SPACING)
       {
-         for(int x = - BG03_CLOVER_SPACING * 4;
-             x < SCREEN_WIDTH + BG03_CLOVER_SPACING * 4;
+         for(int x = - BG03_CLOVER_SPACING * 2;
+             x < SCREEN_WIDTH + BG03_CLOVER_SPACING * 2;
              x += BG03_CLOVER_SPACING)
          {
             // Bits 0-1 selects orientation.
+            // Bits 2-3 sets clover visibility.
             // Bits 4-7 selects clover variation:
             //    0001 -> 4 leaf clover.
             //    0011 -> no clover.
@@ -455,6 +463,8 @@ static void Song03(PlaydateAPI *pd, int game_time_ms)
             // Bits 24-29 sets Y offset.
             const uint32_t h = HashXY(x0 + x, y0 + y);
             if( (h & 0xf0) == 0x30 )
+               continue;
+            if( (h & layer_visibility_mask) == 0 )
                continue;
             int tile_index = (h & 0x70) >> 1;
             if( (h & 0xf0) == 0x10 )
@@ -1064,6 +1074,9 @@ static void Song07(PlaydateAPI *pd, int game_time_ms)
 // to be 6*37 such that the moon is fully visible by the last 2 measures.
 #define BG08_DURATION         (SOR_OP6_NO08_PART1_MS_PER_TICK * 6 * 37)
 
+// Number of milliseconds between background updates.
+#define BG08_UPDATE_PERIOD    100
+
 // Eclipse shadow sizes in pixels.
 #define BG08_UMBRA_RADIUS     BG08_MOON_RADIUS
 #define BG08_PENUMBRA_RADIUS  (BG08_UMBRA_RADIUS * 2)
@@ -1078,27 +1091,35 @@ static void Song07(PlaydateAPI *pd, int game_time_ms)
 #define BG08_PENUMBRA_RADIUS_SQUARED   \
    (BG08_PENUMBRA_RADIUS * BG08_PENUMBRA_RADIUS)
 
-// Image handle.
-static LCDBitmap *g_bg08 = NULL;
+// Image handles.
+static LCDBitmap *g_bg08_moon = NULL;
+static LCDBitmap *g_bg08_cache = NULL;
 
 // Final position of eclipse center in screen coordinates.
 static int g_bg08_eclipse_final_x = 0;
 static int g_bg08_eclipse_final_y = 0;
 
+// Microsecond timestamp of previous cache update.
+static int g_bg08_last_update = 0;
+
 static void InitSong08(PlaydateAPI *pd)
 {
-   if( g_bg08 == NULL )
+   if( g_bg08_moon == NULL )
    {
       const char *error;
-      g_bg08 = pd->graphics->loadBitmap("bg08", &error);
-      assert(g_bg08 != NULL);
+      g_bg08_moon = pd->graphics->loadBitmap("bg08", &error);
+      assert(g_bg08_moon != NULL);
 
       #ifndef NDEBUG
          int width, height;
-         pd->graphics->getBitmapData(g_bg08, &width, &height, NULL, NULL, NULL);
+         pd->graphics->getBitmapData(
+            g_bg08_moon, &width, &height, NULL, NULL, NULL);
          assert(width == BG08_MOON_SIZE);
          assert(height == BG08_MOON_SIZE);
       #endif
+
+      g_bg08_cache = pd->graphics->newBitmap(
+         SCREEN_WIDTH, SCREEN_HEIGHT, kColorBlack);
    }
 
    const float a = RAND_RANGE(10, 170) * PI / 180;
@@ -1106,19 +1127,37 @@ static void InitSong08(PlaydateAPI *pd)
       SCREEN_WIDTH / 2 - (int)(BG08_ECLIPSE_DISTANCE * cosf(a));
    g_bg08_eclipse_final_y =
       SCREEN_HEIGHT / 2 - (int)(BG08_ECLIPSE_DISTANCE * sinf(a));
+
+   g_bg08_last_update = -1000;
 }
 
 static void Song08(PlaydateAPI *pd, int game_time_ms)
 {
+   // Use cached image after animation time is done, or if the cached
+   // background is still sufficiently fresh.
+   //
+   // This is done because computing the shadows costs a fair bit of CPU,
+   // such that if we do it on every frame when playing over Mirror, we
+   // would get about ~28 fps for the first few seconds.  We would get our
+   // 30 fps back by doing updates only once every few frames.  Since the
+   // shadow moves relatively slowly, the reduced update rate is not
+   // noticeable anyway, so this optimization is always enabled even when
+   // not running with Mirror.
+   if( game_time_ms > BG08_DURATION ||
+       game_time_ms - g_bg08_last_update < BG08_UPDATE_PERIOD )
+   {
+      pd->graphics->drawBitmap(g_bg08_cache, 0, 0, kBitmapUnflipped);
+      return;
+   }
+
+   pd->graphics->pushContext(g_bg08_cache);
+   pd->graphics->clear(kColorBlack);
+
    pd->graphics->drawBitmap(
-      g_bg08,
+      g_bg08_moon,
       (SCREEN_WIDTH - BG08_MOON_SIZE) / 2,
       (SCREEN_HEIGHT - BG08_MOON_SIZE) / 2,
       kBitmapUnflipped);
-
-   // Stop drawing eclipse shadows after animation time is done.
-   if( game_time_ms > BG08_DURATION )
-      return;
 
    // Compute eclipse center location with integer arithmetic.
    assert((uint64_t)BG08_ECLIPSE_DISTANCE * (uint64_t)BG08_DURATION * 64LL
@@ -1169,6 +1208,10 @@ static void Song08(PlaydateAPI *pd, int game_time_ms)
             x, y, 8, 8, (LCDColor)kTranslucentBlack[opacity]);
       }
    }
+
+   pd->graphics->popContext();
+   pd->graphics->drawBitmap(g_bg08_cache, 0, 0, kBitmapUnflipped);
+   g_bg08_last_update = game_time_ms;
 }
 
 // }}}
@@ -1481,6 +1524,18 @@ typedef struct
 #define BG11_MIN_INTENSITY    32
 #define BG11_MAX_INTENSITY    64
 
+static inline void FlushSameIntensityBlock(
+   PlaydateAPI *pd, int x, int y, int intensity, int block_count)
+{
+   if( block_count == 0 || intensity == 0 )
+      return;
+   pd->graphics->fillRect(x - block_count * BG11_BLOCK_SIZE,
+                          y,
+                          block_count * BG11_BLOCK_SIZE,
+                          BG11_BLOCK_SIZE,
+                          (LCDColor)kOpaqueGray[intensity]);
+}
+
 static void Song11(PlaydateAPI *pd, int game_time_ms)
 {
    // Compute parameters for each object.  First few entries are skipped since
@@ -1498,10 +1553,10 @@ static void Song11(PlaydateAPI *pd, int game_time_ms)
    // One thought was to pre-compute the parameters and then copy them to the
    // stack here such that they are inside the TCM, but the cost of that extra
    // copy makes this not worthwhile (I tried).
-   int obj_position[BG11_OBJ_COUNT];
-   int obj_intensity[BG11_OBJ_COUNT];
-   int ahead_angle[BG11_OBJ_COUNT];
-   int behind_angle[BG11_OBJ_COUNT];
+   uint32_t obj_position[BG11_OBJ_COUNT];
+   uint32_t obj_intensity[BG11_OBJ_COUNT];
+   uint32_t ahead_angle[BG11_OBJ_COUNT];
+   uint32_t behind_angle[BG11_OBJ_COUNT];
    for(int i = BG11_LOW_ORBIT_INDEX + 1; i < BG11_OBJ_COUNT; i++)
    {
       // Initial phase offset for each object is derived by hashing the
@@ -1554,12 +1609,33 @@ static void Song11(PlaydateAPI *pd, int game_time_ms)
       const int block_y = block_y0 + y / BG11_BLOCK_SIZE;
       if( block_y < 0 || block_y >= BG11_TABLE_SIZE )
          continue;
+
+      // Run-length encode blocks of the same intensity to reduce number of
+      // rectangles drawn.  This optimization works because there are often
+      // long contiguous runs of black space between orbits, and we can draw
+      // those in one call to fillRect instead of several calls.  This
+      // reduces the number of rectangles drawn from 1664 to somewhere
+      // between ~1010 to ~1170.
+      //
+      // When playing over Mirror, we used to get 24-26 fps before this
+      // optimization, and now we get 28-29fps.
+      int previous_intensity = 0;
+      int same_intensity_count = 0;
+
       for(int x = -BG11_BLOCK_SIZE; x < SCREEN_WIDTH + BG11_BLOCK_SIZE;
           x += BG11_BLOCK_SIZE)
       {
          const int block_x = block_x0 + x / BG11_BLOCK_SIZE;
          if( block_x < 0 || block_x >= BG11_TABLE_SIZE )
+         {
+            FlushSameIntensityBlock(pd,
+                                    x - x_block_offset,
+                                    y - y_block_offset,
+                                    previous_intensity,
+                                    same_intensity_count);
+            previous_intensity = same_intensity_count = 0;
             continue;
+         }
          const BG11Cell *cell = &kBG11Grid[block_y][block_x];
          const int orbit_index = cell->d / BG11_ORBIT_SEPARATION;
 
@@ -1581,14 +1657,14 @@ static void Song11(PlaydateAPI *pd, int game_time_ms)
 
             // Set influence due to orbital distance such that closer
             // distance yields greater influence.
-            const int distance_influence =
+            const uint32_t distance_influence =
                BG11_ORBIT_SEPARATION - orbit_distance;
 
             // Compute angle delta with wraparound.
             const int delta_a = ((cell->a - obj_position[oi]) & 0xffff);
 
             // Compute angular influence and scale it to a maximum of 0x100.
-            int angle_influence;
+            uint32_t angle_influence;
             if( delta_a <= ahead_angle[oi] )
             {
                // Current block is ahead of object.
@@ -1647,13 +1723,27 @@ static void Song11(PlaydateAPI *pd, int game_time_ms)
          if( intensity > 64 )
             intensity = 64;
 
-         pd->graphics->fillRect(
-            x - x_block_offset,
-            y - y_block_offset,
-            BG11_BLOCK_SIZE,
-            BG11_BLOCK_SIZE,
-            (LCDColor)kOpaqueGray[intensity]);
+         if( intensity == previous_intensity )
+         {
+            same_intensity_count++;
+            continue;
+         }
+
+         FlushSameIntensityBlock(pd,
+                                 x - x_block_offset,
+                                 y - y_block_offset,
+                                 previous_intensity,
+                                 same_intensity_count);
+         previous_intensity = intensity;
+         same_intensity_count = 1;
       }
+
+      // Draw the last block.
+      FlushSameIntensityBlock(pd,
+                              SCREEN_WIDTH + BG11_BLOCK_SIZE - x_block_offset,
+                              y - y_block_offset,
+                              previous_intensity,
+                              same_intensity_count);
    }
 }
 
@@ -1764,7 +1854,7 @@ static void Song12(PlaydateAPI *pd, int frames)
 
 //////////////////////////////////////////////////////////////////////
 
-// {{{ Song 01: Low density starfield.
+// {{{ Song 1: Low density starfield.
 
 // Song 1 is the exact same idea as song 12, but at a much lower density.
 // The similarity is meant to complete a loop between the first and last
@@ -1882,4 +1972,10 @@ void RenderGameBackground(PlaydateAPI *pd,
       case 12: Song12(pd, game_frames);  break;
       default: break;
    }
+}
+
+// Set reduced drawing mode for some backgrounds.
+void ReduceBackgroundDetail(int reduce)
+{
+   g_reduce_details = reduce;
 }
