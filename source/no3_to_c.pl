@@ -3,7 +3,7 @@
 #
 #  uint8_t kSorOp6No3[tick]
 #
-# Where "tick" is the dick index in the song data.  Each entry will contain
+# Where "tick" is the tick index in the song data.  Each entry will contain
 # a value in the range of 0..4 that selects the sprite indices that should
 # be used for sprites in that tick.
 

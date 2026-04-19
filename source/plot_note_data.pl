@@ -193,9 +193,9 @@ sub convert_tab_to_plot($$$$$)
          #
          # Here we are taking a greedy approach of assigning the first line
          # that fits, applying accidentals as needed.  The end result is
-         # honestly quite ugly.  Professionally engraved scores tend look at
-         # the measure as a whole and work harder to minimize the number of
-         # accidentals, but we don't do any of that here.
+         # honestly quite ugly.  Professionally engraved scores tend to look
+         # at the measure as a whole and work harder to minimize the number
+         # of accidentals, but we don't do any of that here.
 
          # First pass: find line with exact pitch, taking existing modifiers
          # into account.

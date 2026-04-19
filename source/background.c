@@ -270,7 +270,7 @@ void RenderTitleBackground(PlaydateAPI *pd, int frame)
 // Number of fireworks image tiles.
 #define BG02_TILE_COUNT       30
 
-// Size of a single foreworks tile in pixels.  Assumes square tiles.
+// Size of a single fireworks tile in pixels.  Assumes square tiles.
 #define BG02_TILE_SIZE        100
 
 // Total number of notes observed at last frame.
