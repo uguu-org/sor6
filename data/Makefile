@@ -212,7 +212,7 @@ $(BUILD_DIR)/t_moon.png: moon/DSC_2312.jpg $(BUILD_DIR)/fs_dither.exe
 $(BUILD_DIR)/t_gears_large.png: $(BUILD_DIR)/t_gears_gray.png $(BUILD_DIR)/crop_table.exe $(BUILD_DIR)/dither.exe
 	magick $< +repage -crop "7680x128+0+0" png:- | $(BUILD_DIR)/crop_table.exe 128 128 110 110 9 9 | $(BUILD_DIR)/dither.exe - $@
 
-$(BUILD_DIR)/t_gears_small.png:$(BUILD_DIR)/t_gears_gray.png
+$(BUILD_DIR)/t_gears_small.png:$(BUILD_DIR)/t_gears_gray.png $(BUILD_DIR)/crop_table.exe $(BUILD_DIR)/dither.exe
 	magick $< +repage -crop "2560x128+0+128" png:- | $(BUILD_DIR)/crop_table.exe 128 128 60 60 34 34 | $(BUILD_DIR)/dither.exe - $@
 
 $(BUILD_DIR)/t_gears_gray.png: $(BUILD_DIR)/t_gears.svg svg_to_png.sh
