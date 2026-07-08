@@ -2,18 +2,16 @@ Fernado Sor Opus 6, No 10
 
 See sor_op6_no11.txt for more notes on file format.
 
-Tab data here has been verified against Sor-Etudes-Op6-no10.pdf that's
-found here:
-https://www.thisisclassicalguitar.com/fernando-sor-studies-free-sheet-music-pdfs/
+Tab data here has been verified against two sources:
+- "The Guitar Etudes - Definitive Edition" (ISBN 978-4-11-238200-1) - etude 79
+- Sor-Etudes-Op6-no10.pdf from https://www.thisisclassicalguitar.com/fernando-sor-studies-free-sheet-music-pdfs/
 
-Note that this version contained many differences from IMSLP's version:
+Note that both these versions differ from IMSLP's version:
 https://imslp.org/wiki/12_Etudes,_Op.6_(Sor,_Fernando)
 
 In particular, about half of the measures in the first part contained
 notes modified by sharps in the first version, but IMSLP's version
-would have those notes down by one semitone.  IMSLP's version seemed
-unique in this regard, all other versions I found had the extra
-sharps, so I went with the majority.
+would have those notes down by one semitone.
 
 Timing = Moderato
 

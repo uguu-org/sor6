@@ -2,8 +2,9 @@ Fernado Sor Opus 6, No 6
 
 See sor_op6_no11.txt for more notes on file format.
 
-Tab data here has been verified against what's listed as estudio 21 in
-"Fernando Sor - 25 Etudes" (ISBN 978-4-11-238020-5)
+Tab data here has been verified against two sources:
+- "Fernando Sor - 25 Etudes" (ISBN 978-4-11-238020-5) - estudio 21
+- "The Guitar Etudes - Definitive Edition" (ISBN 978-4-11-238200-1) - etude 93
 
 Timing = Allegro
 
